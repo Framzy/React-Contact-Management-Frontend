@@ -14,7 +14,9 @@ createRoot(document.getElementById("root")).render(
           <Route path="/register" element={<UserRegister />} />
           <Route path="/login" element={<UserLogin />} />
         </Route>
-        <Route path="/dashboard" element={<DashboardLayout />}></Route>
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route path="contacts" element={<h1>Contacts</h1>} />
+        </Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>
