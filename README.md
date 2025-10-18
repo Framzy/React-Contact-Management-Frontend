@@ -1,16 +1,81 @@
-# React + Vite
+# React Contact Management Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Frontend Project
 
-Currently, two official plugins are available:
+In this class, we will practice building the Frontend Project using React.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+We will focus on creating the Frontend Project application in the form of a SPA (Single Page Application).
 
-## React Compiler
+And because the data is handled by the Backend, we don't need to use a Global State Management system like Redux.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+We only need to use React and React Router for the project.
 
-## Expanding the ESLint configuration
+## Token Management
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Pada aplikasi Backend Project, session user direpresentasikan dalam Token
+
+Dan Token tersebut perlu dikirim di tiap http request
+
+Oleh karena itu, di Frontend Project, kita akan menyimpan data token tersebut di Browser Local Storage, agar bisa digunakan di http request selanjutnya
+
+[https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+
+## Setup Project
+
+- ### Create React By Vite
+
+```bash
+npm create vite@latest react-contact-management-frontend -- --template react
+
+npm install react-router
+```
+
+- ### React Use
+
+  One of the popular hooks libraries in React is react-use, which contains Hooks that we can use easily.
+
+  In this material, we will also use this library to help simplify the project creation.
+
+  [https://github.com/streamich/react-use](https://github.com/streamich/react-use)
+
+  ```bash
+  npm install react-use
+  ```
+
+- ### Sweet Alert
+
+  Another library we will use in this project is Sweet Alert; this is a library we can use to display better alerts compared to the default alerts from the Web Browser.
+
+  [https://sweetalert2.github.io/](https://sweetalert2.github.io/)
+
+  ```bash
+  npm install sweetalert2
+  ```
+
+## Project Structure
+
+- ### main
+
+  main.jsx
+
+- ### components
+
+  - ### Layout
+
+    Layout.jsx
+
+  - ### User
+
+    UserRegister.jsx
+
+  - ### Contact
+
+- ### lib
+
+  - ### api
+
+    UserApi.js
+
+  - ### alert
+
+    alert.js
