@@ -10,7 +10,7 @@ export default function UserRegister() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  async function handelSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -47,7 +47,7 @@ export default function UserRegister() {
           <h1 className="text-3xl font-bold text-white">Contact Management</h1>
           <p className="text-gray-300 mt-2">Create a new account</p>
         </div>
-        <form onSubmit={handelSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
               htmlFor="username"
@@ -153,6 +153,7 @@ export default function UserRegister() {
             <Link
               href="index.html"
               className="text-blue-400 hover:text-blue-300 font-medium transition-colors duration-200"
+              to="/login"
             >
               Sign in
             </Link>
