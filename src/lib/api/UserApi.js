@@ -12,6 +12,7 @@ export const userRegister = async ({ username, password, name }) => {
     }),
   });
 };
+
 export const userLogin = async ({ username, password }) => {
   return await fetch(`${import.meta.env.VITE_API_PATH}/users/login`, {
     method: "POST",
@@ -23,5 +24,17 @@ export const userLogin = async ({ username, password }) => {
       username,
       password,
     }),
+  });
+};
+
+
+export const userDetail = async ({ token }) => {
+  return await fetch(`${import.meta.env.VITE_API_PATH}/users/current`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: token,
+    },
   });
 };
