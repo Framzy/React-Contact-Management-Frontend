@@ -1,4 +1,76 @@
+import { useState } from "react";
+import { alertError, alertSuccess } from "../../lib/alert";
+import {
+  userDetail,
+  userUpdateProfile,
+  userUpdatePassword,
+} from "../../lib/api/UserApi";
+import { useLocalStorage, useEffectOnce } from "react-use";
+
 export default function UserProfile() {
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [token, _] = useLocalStorage("token", null);
+
+  async function fetchUserDetail() {
+    const response = await userDetail({ token });
+    const responseBody = await response.json();
+    console.log(responseBody);
+
+    if (response.status === 200) {
+      setName(responseBody.data.name);
+    } else if (response.status === 500) {
+      await alertError("Internal server error");
+    } else {
+      await alertError(responseBody.errors);
+    }
+  }
+
+  useEffectOnce(() => {
+    fetchUserDetail().then(() =>
+      console.log("User detail fetched successfully")
+    );
+  }, []);
+
+  async function handleSubmitProfile(e) {
+    e.preventDefault();
+
+    const response = await userUpdateProfile(token, { name });
+    const responseBody = await response.json();
+    console.log(responseBody);
+
+    if (response.status === 200) {
+      await alertSuccess("Name updated successfully");
+    } else if (response.status === 500) {
+      await alertError("Internal server error");
+    } else {
+      await alertError(responseBody.errors);
+    }
+  }
+
+  async function handleSubmitPassword(e) {
+    e.preventDefault();
+
+    if (password !== confirmPassword) {
+      await alertError("Passwords do not match");
+      return setPassword(""), setConfirmPassword("");
+    }
+
+    const response = await userUpdatePassword(token, { password });
+    const responseBody = await response.json();
+
+    if (response.status === 200) {
+      await alertSuccess("Name updated successfully");
+    } else if (response.status === 500) {
+      await alertError("Internal server error");
+    } else {
+      await alertError(responseBody.errors);
+    }
+
+    setPassword(""), setConfirmPassword("");
+  }
+
   return (
     <>
       <main className="container mx-auto px-4 py-8 flex-grow">
@@ -7,7 +79,6 @@ export default function UserProfile() {
           <h1 className="text-2xl font-bold text-white">My Profile</h1>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Form 1: Edit Name */}
           <div className="bg-gray-800 bg-opacity-80 rounded-xl shadow-custom border border-gray-700 overflow-hidden card-hover animate-fade-in">
             <div className="p-6">
               <div className="flex items-center mb-4">
@@ -18,7 +89,7 @@ export default function UserProfile() {
                   Edit Profile
                 </h2>
               </div>
-              <form>
+              <form onSubmit={handleSubmitProfile}>
                 <div className="mb-5">
                   <label
                     htmlFor="name"
@@ -36,8 +107,9 @@ export default function UserProfile() {
                       name="name"
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter your full name"
-                      defaultValue="John Doe"
                       required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                     />
                   </div>
                 </div>
@@ -52,7 +124,7 @@ export default function UserProfile() {
               </form>
             </div>
           </div>
-          {/* Form 2: Edit Password */}
+
           <div className="bg-gray-800 bg-opacity-80 rounded-xl shadow-custom border border-gray-700 overflow-hidden card-hover animate-fade-in">
             <div className="p-6">
               <div className="flex items-center mb-4">
@@ -63,7 +135,7 @@ export default function UserProfile() {
                   Change Password
                 </h2>
               </div>
-              <form>
+              <form onSubmit={handleSubmitPassword}>
                 <div className="mb-5">
                   <label
                     htmlFor="new_password"
@@ -82,6 +154,8 @@ export default function UserProfile() {
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter your new password"
                       required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
                 </div>
@@ -103,6 +177,8 @@ export default function UserProfile() {
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Confirm your new password"
                       required
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                   </div>
                 </div>
