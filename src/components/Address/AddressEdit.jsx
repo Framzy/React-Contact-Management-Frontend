@@ -1,7 +1,63 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router";
+import { useEffectOnce, useLocalStorage } from "react-use";
+import { addressDetail } from "../../lib/api/AddressApi";
+import { contactDetail } from "../../lib/api/ContactApi";
 
 export default function AddressEdit() {
   const { id, addressId } = useParams();
+  const [token, _] = useLocalStorage("token", "");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [province, setProvince] = useState("");
+  const [country, setCountry] = useState("");
+  const [postal_code, setPostalCode] = useState("");
+
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
+  async function fetchContact() {
+    const response = await contactDetail(token, id);
+
+    const responseBody = await response.json();
+
+    if (response.status === 200) {
+      setFirstName(responseBody.data.first_name);
+      setLastName(responseBody.data.last_name);
+      setEmail(responseBody.data.email);
+      setPhone(responseBody.data.phone);
+    } else if (response.status === 500) {
+      console.log("Internal server error");
+    } else {
+      console.log(responseBody.errors);
+    }
+  }
+
+  async function fetchAddress() {
+    const response = await addressDetail(token, { contactId: id, addressId });
+
+    const responseBody = await response.json();
+    console.log(responseBody);
+
+    if (response.status === 200) {
+      setStreet(responseBody.data.street);
+      setCity(responseBody.data.city);
+      setProvince(responseBody.data.province);
+      setCountry(responseBody.data.country);
+      setPostalCode(responseBody.data.postal_code);
+    } else if (response.status === 500) {
+      console.log("Internal server error");
+    } else {
+      console.log(responseBody.errors);
+    }
+  }
+
+  useEffectOnce(() => {
+    fetchContact().then(() => console.log("fetch contact success"));
+    fetchAddress().then(() => console.log("fetch address success"));
+  });
 
   return (
     <>
@@ -28,9 +84,12 @@ export default function AddressEdit() {
                   <i className="fas fa-user text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-white">John Doe</h2>
+                  <h2 className="text-xl font-semibold text-white">
+                    {first_name}
+                    {last_name}
+                  </h2>
                   <p className="text-gray-300 text-sm">
-                    john.doe@example.com • +1 (555) 123-4567
+                    {email} • {phone}
                   </p>
                 </div>
               </div>
@@ -53,8 +112,9 @@ export default function AddressEdit() {
                     name="street"
                     className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                     placeholder="Enter street address"
-                    defaultValue="123 Main St"
                     required
+                    value={street}
+                    onChange={(e) => setStreet(e.target.value)}
                   />
                 </div>
               </div>
@@ -76,8 +136,9 @@ export default function AddressEdit() {
                       name="city"
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter city"
-                      defaultValue="New York"
                       required
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
                     />
                   </div>
                 </div>
@@ -98,8 +159,9 @@ export default function AddressEdit() {
                       name="province"
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter province or state"
-                      defaultValue="NY"
                       required
+                      value={province}
+                      onChange={(e) => setProvince(e.target.value)}
                     />
                   </div>
                 </div>
@@ -122,8 +184,9 @@ export default function AddressEdit() {
                       name="country"
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter country"
-                      defaultValue="USA"
                       required
+                      value={country}
+                      onChange={(e) => setCountry(e.target.value)}
                     />
                   </div>
                 </div>
@@ -144,19 +207,20 @@ export default function AddressEdit() {
                       name="postal_code"
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter postal code"
-                      defaultValue={10001}
                       required
+                      value={postal_code}
+                      onChange={(e) => setPostalCode(e.target.value)}
                     />
                   </div>
                 </div>
               </div>
               <div className="flex justify-end space-x-4">
-                <a
+                <Link
                   href="detail_contact.html"
                   className="px-5 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center shadow-md"
                 >
                   <i className="fas fa-times mr-2" /> Cancel
-                </a>
+                </Link>
                 <button
                   type="submit"
                   className="px-5 py-3 bg-gradient text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-lg transform hover:-translate-y-0.5 flex items-center"
