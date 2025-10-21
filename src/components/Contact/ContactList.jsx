@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useEffectOnce, useLocalStorage } from "react-use";
 import { contactList } from "../../lib/api/ContactApi";
@@ -10,12 +10,26 @@ export default function ContactList() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
   const [contacts, setContacts] = useState([]);
+  const [reload, setReload] = useState(false);
+
+  function getPages() {
+    const pages = [];
+    for (let i = 1; i <= totalPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
 
   async function handleSearchContact(e) {
     e.preventDefault();
+    setReload(!reload);
+  }
 
-    await fetchContacts();
+  async function handlePageChange(page) {
+    setPage(page);
+    setReload(!reload);
   }
 
   async function fetchContacts() {
@@ -31,6 +45,8 @@ export default function ContactList() {
 
     if (response.status === 200) {
       setContacts(responseBody.data);
+      setTotalPage(responseBody.paging.total_page);
+      console.log(responseBody.paging.total_page);
     } else if (response.status === 500) {
       await alertError("Internal server error");
     } else {
@@ -38,9 +54,9 @@ export default function ContactList() {
     }
   }
 
-  useEffectOnce(() => {
+  useEffect(() => {
     fetchContacts().then(() => console.log("Contacts fetched successfully"));
-  }, [name, email, phone, page]);
+  }, [reload]);
 
   useEffectOnce(() => {
     const toggleButton = document.getElementById("toggleSearchForm");
@@ -265,36 +281,51 @@ export default function ContactList() {
 
         <div className="mt-10 flex justify-center">
           <nav className="flex items-center space-x-3 bg-gray-800 bg-opacity-80 rounded-xl shadow-custom border border-gray-700 p-3 animate-fade-in">
-            <a
-              href="#"
-              className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center"
-            >
-              <i className="fas fa-chevron-left mr-2" /> Previous
-            </a>
-            <a
-              href="#"
-              className="px-4 py-2 bg-gradient text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md"
-            >
-              1
-            </a>
-            <a
-              href="#"
-              className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200"
-            >
-              2
-            </a>
-            <a
-              href="#"
-              className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200"
-            >
-              3
-            </a>
-            <a
-              href="#"
-              className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center"
-            >
-              Next <i className="fas fa-chevron-right ml-2" />
-            </a>
+            {page > 1 && (
+              <a
+                href="#"
+                onClick={() => handlePageChange(page - 1)}
+                className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center"
+              >
+                <i className="fas fa-chevron-left mr-2" /> Previous
+              </a>
+            )}
+
+            {getPages().map((value) => {
+              if (value === page) {
+                return (
+                  <a
+                    key={value}
+                    href="#"
+                    onClick={() => handlePageChange(value)}
+                    className="px-4 py-2 bg-gradient text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md"
+                  >
+                    {value}
+                  </a>
+                );
+              } else {
+                return (
+                  <a
+                    key={value}
+                    href="#"
+                    onClick={() => handlePageChange(value)}
+                    className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200"
+                  >
+                    {value}
+                  </a>
+                );
+              }
+            })}
+
+            {page < totalPage && (
+              <a
+                href="#"
+                onClick={() => handlePageChange(page + 1)}
+                className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center"
+              >
+                Next <i className="fas fa-chevron-right ml-2" />
+              </a>
+            )}
           </nav>
         </div>
       </div>
