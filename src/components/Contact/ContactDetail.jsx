@@ -53,7 +53,9 @@ export default function ContactDetail() {
               <div className="w-20 h-20 bg-gradient rounded-full mx-auto flex items-center justify-center mb-4 shadow-lg">
                 <i className="fas fa-user text-3xl text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">John Doe</h2>
+              <h2 className="text-2xl font-bold text-white mb-2">
+                {first_name} {last_name}
+              </h2>
               <div className="w-24 h-1 bg-gradient mx-auto rounded-full" />
             </div>
 
@@ -81,9 +83,9 @@ export default function ContactDetail() {
               <div className="bg-gray-700 bg-opacity-50 p-5 rounded-lg shadow-md border border-gray-600 transition-all duration-200 hover:bg-opacity-70">
                 <div className="flex items-center mb-2">
                   <i className="fas fa-envelope text-blue-400 mr-2" />
-                  <h3 className="text-gray-300 text-sm font-medium">{email}</h3>
+                  <h3 className="text-gray-300 text-sm font-medium">Email</h3>
                 </div>
-                <p className="text-white text-lg ml-6">john.doe@example.com</p>
+                <p className="text-white text-lg ml-6">{email}</p>
               </div>
               <div className="bg-gray-700 bg-opacity-50 p-5 rounded-lg shadow-md border border-gray-600 transition-all duration-200 hover:bg-opacity-70">
                 <div className="flex items-center mb-2">
@@ -101,7 +103,10 @@ export default function ContactDetail() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="bg-gray-700 bg-opacity-50 p-5 rounded-lg border-2 border-dashed border-gray-600 shadow-md card-hover">
-                  <a href="add_address.html" className="block h-full">
+                  <Link
+                    to={`/dashboard/contacts/${id}/addresses`}
+                    className="block h-full"
+                  >
                     <div className="flex flex-col items-center justify-center h-full text-center py-4">
                       <div className="w-16 h-16 bg-gradient rounded-full flex items-center justify-center mb-4 shadow-lg transform transition-transform duration-300 hover:scale-110">
                         <i className="fas fa-plus text-2xl text-white" />
@@ -110,7 +115,7 @@ export default function ContactDetail() {
                         Add Address
                       </h4>
                     </div>
-                  </a>
+                  </Link>
                 </div>
                 <div className="bg-gray-700 bg-opacity-50 p-5 rounded-lg shadow-md border border-gray-600 card-hover">
                   <div className="flex items-center mb-3">
@@ -149,12 +154,12 @@ export default function ContactDetail() {
                     </p>
                   </div>
                   <div className="flex justify-end space-x-3">
-                    <a
-                      href="edit_address.html"
+                    <Link
+                      to={`/dashboard/contacts/${id}/addresses`}
                       className="px-4 py-2 bg-gradient text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center"
                     >
                       <i className="fas fa-edit mr-2" /> Edit
-                    </a>
+                    </Link>
                     <button className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center">
                       <i className="fas fa-trash-alt mr-2" /> Delete
                     </button>
