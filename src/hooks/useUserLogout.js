@@ -1,6 +1,6 @@
 import { useLocalStorage } from "react-use";
 import { userLogout } from "../lib/api/UserApi";
-import { alertConfirm, alertError } from "../lib/alert";
+import { alertConfirm, alertError, alertSuccess } from "../lib/alert";
 import { useNavigate } from "react-router";
 
 export default function useUserLogout() {
@@ -8,22 +8,24 @@ export default function useUserLogout() {
   const navigate = useNavigate();
 
   async function handleLogout() {
-    const result = await alertConfirm();
-    if (!result.isConfirmed) return; // batal logout
+    if (!(await alertConfirm("You will be logged out from your account!"))) {
+      return; // batal logout
+    } else {
+      try {
+        const response = await userLogout({ token });
+        const responseBody = await response.json();
 
-    try {
-      const response = await userLogout({ token });
-      const responseBody = await response.json();
-
-      if (response.status === 200) {
-        setToken("");
-        navigate("/login");
-      } else {
-        await alertError(responseBody.errors);
+        if (response.status === 200) {
+          setToken("");
+          alertSuccess("Logout successfully");
+          navigate("/login");
+        } else {
+          await alertError(responseBody.errors);
+        }
+      } catch (error) {
+        console.log(error);
+        await alertError("Failed to logout. Please try again.");
       }
-    } catch (error) {
-      console.log(error);
-      await alertError("Failed to logout. Please try again.");
     }
   }
 

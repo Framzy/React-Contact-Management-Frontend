@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useEffectOnce, useLocalStorage } from "react-use";
-import { contactList } from "../../lib/api/ContactApi";
-import { alertError } from "../../lib/alert";
+import { contactDelete, contactList } from "../../lib/api/ContactApi";
+import { alertConfirm, alertError, alertSuccess } from "../../lib/alert";
 
 export default function ContactList() {
   const [token, _] = useLocalStorage("token", "");
@@ -22,8 +22,26 @@ export default function ContactList() {
     return pages;
   }
 
+  async function handleDeleteContact(id) {
+    if (
+      !(await alertConfirm("Are you sure you want to delete this contact?"))
+    ) {
+      return; // batal delete
+    }
+
+    const response = await contactDelete(token, id);
+
+    if (response.status === 200) {
+      await alertSuccess("Contact deleted successfully");
+      setReload(!reload);
+    } else {
+      await alertError("Failed to delete contact. Please try again.");
+    }
+  }
+
   async function handleSearchContact(e) {
     e.preventDefault();
+    setPage(1);
     setReload(!reload);
   }
 
@@ -41,12 +59,10 @@ export default function ContactList() {
     });
 
     const responseBody = await response.json();
-    console.log(responseBody);
 
     if (response.status === 200) {
       setContacts(responseBody.data);
       setTotalPage(responseBody.paging.total_page);
-      console.log(responseBody.paging.total_page);
     } else if (response.status === 500) {
       await alertError("Internal server error");
     } else {
@@ -270,7 +286,10 @@ export default function ContactList() {
                   >
                     <i className="fas fa-edit mr-2" /> Edit
                   </Link>
-                  <button className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center">
+                  <button
+                    onClick={() => handleDeleteContact(contact.id)}
+                    className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center"
+                  >
                     <i className="fas fa-trash-alt mr-2" /> Delete
                   </button>
                 </div>

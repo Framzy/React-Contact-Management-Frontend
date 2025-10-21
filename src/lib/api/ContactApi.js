@@ -38,9 +38,9 @@ export const contactUpdate = async (
   });
 };
 
-export const contactProfile = async ({ token }) => {
-  return await fetch(`${import.meta.env.VITE_API_PATH}/contacts/:id`, {
-    method: "PUT",
+export const contactDelete = async (token, id) => {
+  return await fetch(`${import.meta.env.VITE_API_PATH}/contacts/${id}`, {
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",

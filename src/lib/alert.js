@@ -14,10 +14,10 @@ export const alertError = async (message) => {
     text: message,
   });
 };
-export const alertConfirm = async () => {
+export const alertConfirm = async (message) => {
   const result = await Swal.fire({
     title: "Are you sure?",
-    text: "You will be logged out from your account!",
+    text: message,
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
@@ -25,13 +25,5 @@ export const alertConfirm = async () => {
     confirmButtonText: "Yes, Logout",
   });
 
-  if (result.isConfirmed) {
-    await Swal.fire({
-      title: "Logout!",
-      text: "Logout successfully",
-      icon: "success",
-    });
-  }
-
-  return result;
+  return result.isConfirmed;
 };
