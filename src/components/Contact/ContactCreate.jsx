@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useLocalStorage } from "react-use";
 import { contactCreate } from "../../lib/api/ContactApi";
 import { alertError, alertSuccess } from "../../lib/alert";
@@ -10,6 +10,7 @@ export default function ContactCreate() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -31,6 +32,7 @@ export default function ContactCreate() {
       setPhone("");
 
       await alertSuccess("Contact created successfully");
+      await navigate("/dashboard/contacts");
     } else if (response.status === 500) {
       await alertError("Internal server error");
     } else {
@@ -151,12 +153,12 @@ export default function ContactCreate() {
                 </div>
               </div>
               <div className="flex justify-end space-x-4">
-                <a
-                  href="dashboard.html"
+                <Link
+                  to="/dashboard/contacts"
                   className="px-5 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center shadow-md"
                 >
                   <i className="fas fa-times mr-2" /> Cancel
-                </a>
+                </Link>
                 <button
                   type="submit"
                   className="px-5 py-3 bg-gradient text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-lg transform hover:-translate-y-0.5 flex items-center"
