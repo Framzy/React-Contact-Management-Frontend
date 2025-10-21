@@ -18,11 +18,11 @@ export const contactCreate = async (
   });
 };
 
-export const contactUpdate = async (
+export const contactEdit = async (
   token,
-  { first_name, last_name, email, phone }
+  { id, first_name, last_name, email, phone }
 ) => {
-  return await fetch(`${import.meta.env.VITE_API_PATH}/contacts/:id`, {
+  return await fetch(`${import.meta.env.VITE_API_PATH}/contacts/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -42,7 +42,16 @@ export const contactDelete = async (token, id) => {
   return await fetch(`${import.meta.env.VITE_API_PATH}/contacts/${id}`, {
     method: "DELETE",
     headers: {
-      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: token,
+    },
+  });
+};
+
+export const contactDetail = async (token, id) => {
+  return await fetch(`${import.meta.env.VITE_API_PATH}/contacts/${id}`, {
+    method: "GET",
+    headers: {
       Accept: "application/json",
       Authorization: token,
     },
