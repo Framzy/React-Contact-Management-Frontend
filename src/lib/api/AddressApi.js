@@ -21,3 +21,33 @@ export const addressCreate = async (
     }
   );
 };
+
+export const addressList = async (token, { contactId }) => {
+  return await fetch(
+    `${import.meta.env.VITE_API_PATH}/contacts/${contactId}/addresses`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: token,
+      },
+    }
+  );
+};
+
+export const addressDelete = async (token, { contactId, addressId }) => {
+  return await fetch(
+    `${
+      import.meta.env.VITE_API_PATH
+    }/contacts/${contactId}/addresses/${addressId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: token,
+      },
+    }
+  );
+};

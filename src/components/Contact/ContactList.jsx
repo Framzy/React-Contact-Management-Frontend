@@ -245,7 +245,7 @@ export default function ContactList() {
             >
               <div className="p-6">
                 <Link
-                  to={`/dashboard/contacts/${contact.id}/detail`}
+                  to={`/dashboard/contacts/${contact.id}`}
                   className="block cursor-pointer hover:bg-gray-700 rounded-lg transition-all duration-200 p-3"
                 >
                   <div className="flex items-center mb-3">
