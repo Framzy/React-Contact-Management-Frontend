@@ -4,6 +4,7 @@ import { useEffectOnce, useLocalStorage } from "react-use";
 import { addressDetail, addressEdit } from "../../lib/api/AddressApi";
 import { contactDetail } from "../../lib/api/ContactApi";
 import { alertError, alertSuccess } from "../../lib/alert";
+import Loader from "../Common/Loader";
 
 export default function AddressEdit() {
   const { id, addressId } = useParams();
@@ -14,9 +15,9 @@ export default function AddressEdit() {
   const [country, setCountry] = useState("");
   const [postal_code, setPostalCode] = useState("");
 
-  const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(true);
   const [contacts, setContacts] = useState([]);
+  const navigate = useNavigate();
 
   async function fetchContact() {
     const response = await contactDetail(token, id);
@@ -50,8 +51,17 @@ export default function AddressEdit() {
   }
 
   useEffectOnce(() => {
-    fetchContact().then(() => console.log("fetch contact success"));
-    fetchAddress().then(() => console.log("fetch address success"));
+    async function init() {
+      try {
+        await Promise.all([fetchContact(), fetchAddress()]);
+        console.log("fetch contact & address success");
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    init();
   });
 
   async function handleSubmit(e) {
@@ -80,6 +90,14 @@ export default function AddressEdit() {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader size={60} color="#16b6ff" />
+      </div>
+    );
+  }
+
   return (
     <>
       <div>
@@ -106,8 +124,7 @@ export default function AddressEdit() {
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold text-white">
-                    {contacts.first_name}
-                    {contacts.last_name}
+                    {contacts.first_name} {contacts.last_name}
                   </h2>
                   <p className="text-gray-300 text-sm">
                     {contacts.email} • {contacts.phone}

@@ -33,8 +33,10 @@ createRoot(document.getElementById("root")).render(
             <Route path=":id">
               <Route index element={<ContactDetail />} />
               <Route path="edit" element={<ContactEdit />} />
-              <Route path="addresses" element={<AddressCreate />} />
-              <Route path="addresses/:addressId" element={<AddressEdit />} />
+              <Route path="addresses">
+                <Route path="create" element={<AddressCreate />} />
+                <Route path=":addressId/edit" element={<AddressEdit />} />
+              </Route>
             </Route>
           </Route>
         </Route>

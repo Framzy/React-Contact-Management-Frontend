@@ -4,6 +4,7 @@ import { useEffectOnce, useLocalStorage } from "react-use";
 import { addressCreate } from "../../lib/api/AddressApi";
 import { alertError, alertSuccess } from "../../lib/alert";
 import { contactDetail } from "../../lib/api/ContactApi";
+import Loader from "../Common/Loader";
 
 export default function AddressCreate() {
   const [token, _] = useLocalStorage("token", "");
@@ -14,6 +15,7 @@ export default function AddressCreate() {
   const [country, setCountry] = useState("");
   const [postal_code, setPostalCode] = useState("");
 
+  const [loading, setLoading] = useState(true);
   const [contacts, setContacts] = useState([]);
   const navigate = useNavigate();
 
@@ -31,16 +33,16 @@ export default function AddressCreate() {
   }
 
   useEffectOnce(() => {
-    fetchContact().then(() => console.log("success"));
+    fetchContact()
+      .then(() => console.log("success"))
+      .finally(() => setLoading(false));
   });
 
   async function handleSubmit(e) {
-    console.log("button click");
-
     e.preventDefault();
 
-    const response = await addressCreate(token, {
-      id,
+    setLoading(true);
+    const response = await addressCreate(token, id, {
       street,
       city,
       province,
@@ -53,12 +55,22 @@ export default function AddressCreate() {
 
     if (response.status === 200) {
       await alertSuccess("Address created successfully");
-      await navigate(`/dashboard/contacts/${id}`);
+      await navigate({
+        pathname: `/dashboard/contacts/${id}`,
+      });
     } else if (response.status === 500) {
       await alertError("Internal server error");
     } else {
       await alertError(responseBody.errors);
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader size={60} color="#16b6ff" />
+      </div>
+    );
   }
 
   return (
