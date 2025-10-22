@@ -49,7 +49,13 @@ export default function ContactDetail() {
     fetchAddresses().then(() => console.log("success addresses"));
   });
 
-
+  function shortText(text) {
+    if (text.length > 13) {
+      return (text = text.substring(0, 13) + "...");
+    } else {
+      return text;
+    }
+  }
 
   return (
     <>
@@ -198,25 +204,25 @@ export default function ContactDetail() {
                       </h4>
                     </div>
                     <div className="space-y-3 text-gray-300 ml-2 mb-4">
-                      <p className="flex items-center">
+                      <p className="flex items-center ">
                         <i className="fas fa-road text-gray-500 w-6" />
                         <span className="font-medium w-24">Street:</span>
-                        <span>{address.street}</span>
+                        <span> {shortText(address.street)}</span>
                       </p>
                       <p className="flex items-center">
                         <i className="fas fa-city text-gray-500 w-6" />
                         <span className="font-medium w-24">City:</span>
-                        <span>{address.city}</span>
+                        <span>{shortText(address.city)}</span>
                       </p>
                       <p className="flex items-center">
                         <i className="fas fa-map text-gray-500 w-6" />
                         <span className="font-medium w-24">Province:</span>
-                        <span>{address.province}</span>
+                        <span>{shortText(address.province)}</span>
                       </p>
                       <p className="flex items-center">
                         <i className="fas fa-flag text-gray-500 w-6" />
                         <span className="font-medium w-24">Country:</span>
-                        <span>{address.country}</span>
+                        <span>{shortText(address.country)}</span>
                       </p>
                       <p className="flex items-center">
                         <i className="fas fa-mailbox text-gray-500 w-6" />
@@ -231,8 +237,7 @@ export default function ContactDetail() {
                       >
                         <i className="fas fa-edit mr-2" /> Edit
                       </Link>
-                      <button 
-                      className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center">
+                      <button className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center">
                         <i className="fas fa-trash-alt mr-2" /> Delete
                       </button>
                     </div>

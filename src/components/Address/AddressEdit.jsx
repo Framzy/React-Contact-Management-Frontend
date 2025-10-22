@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { useEffectOnce, useLocalStorage } from "react-use";
-import { addressDetail } from "../../lib/api/AddressApi";
+import { addressDetail, addressEdit } from "../../lib/api/AddressApi";
 import { contactDetail } from "../../lib/api/ContactApi";
+import { alertError, alertSuccess } from "../../lib/alert";
 
 export default function AddressEdit() {
   const { id, addressId } = useParams();
@@ -13,8 +14,9 @@ export default function AddressEdit() {
   const [country, setCountry] = useState("");
   const [postal_code, setPostalCode] = useState("");
 
+  const navigate = useNavigate();
+
   const [contacts, setContacts] = useState([]);
-  const [addresses, setAddresses] = useState([]);
 
   async function fetchContact() {
     const response = await contactDetail(token, id);
@@ -35,7 +37,11 @@ export default function AddressEdit() {
     console.log(responseBody);
 
     if (response.status === 200) {
-      setAddresses(responseBody.data);
+      setStreet(responseBody.data.street);
+      setCity(responseBody.data.city);
+      setProvince(responseBody.data.province);
+      setCountry(responseBody.data.country);
+      setPostalCode(responseBody.data.postal_code);
     } else if (response.status === 500) {
       console.log("Internal server error");
     } else {
@@ -47,6 +53,32 @@ export default function AddressEdit() {
     fetchContact().then(() => console.log("fetch contact success"));
     fetchAddress().then(() => console.log("fetch address success"));
   });
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    const response = await addressEdit(token, {
+      contactId: id,
+      addressId,
+      street,
+      city,
+      province,
+      country,
+      postal_code,
+    });
+
+    const responseBody = await response.json();
+    console.log(responseBody);
+
+    if (response.status === 200) {
+      await alertSuccess("Address updated successfully");
+      await navigate(`/dashboard/contacts/${id}`);
+    } else if (response.status === 500) {
+      await alertError("Internal server error");
+    } else {
+      await alertError(responseBody.errors);
+    }
+  }
 
   return (
     <>
@@ -83,7 +115,7 @@ export default function AddressEdit() {
                 </div>
               </div>
             </div>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="mb-5">
                 <label
                   htmlFor="street"
@@ -102,7 +134,7 @@ export default function AddressEdit() {
                     className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                     placeholder="Enter street address"
                     required
-                    value={street || addresses.street}
+                    value={street}
                     onChange={(e) => setStreet(e.target.value)}
                   />
                 </div>
@@ -205,7 +237,7 @@ export default function AddressEdit() {
               </div>
               <div className="flex justify-end space-x-4">
                 <Link
-                  href="detail_contact.html"
+                  to={`/dashboard/contacts/${id}/`}
                   className="px-5 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center shadow-md"
                 >
                   <i className="fas fa-times mr-2" /> Cancel

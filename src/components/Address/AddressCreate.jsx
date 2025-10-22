@@ -53,7 +53,7 @@ export default function AddressCreate() {
 
     if (response.status === 200) {
       await alertSuccess("Address created successfully");
-      await navigate(`/dashboard/contacts/${id}/detail`);
+      await navigate(`/dashboard/contacts/${id}`);
     } else if (response.status === 500) {
       await alertError("Internal server error");
     } else {
