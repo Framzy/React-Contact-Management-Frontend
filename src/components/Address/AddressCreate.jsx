@@ -14,22 +14,15 @@ export default function AddressCreate() {
   const [country, setCountry] = useState("");
   const [postal_code, setPostalCode] = useState("");
 
-  const [first_name, setFirstName] = useState("");
-  const [last_name, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [contacts, setContacts] = useState([]);
   const navigate = useNavigate();
 
   async function fetchContact() {
     const response = await contactDetail(token, id);
-
     const responseBody = await response.json();
 
     if (response.status === 200) {
-      setFirstName(responseBody.data.first_name);
-      setLastName(responseBody.data.last_name);
-      setEmail(responseBody.data.email);
-      setPhone(responseBody.data.phone);
+      setContacts(responseBody.data);
     } else if (response.status === 500) {
       console.log("Internal server error");
     } else {
@@ -93,10 +86,10 @@ export default function AddressCreate() {
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold text-white">
-                    {first_name} {last_name}
+                    {contacts.first_name} {contacts.last_name}
                   </h2>
                   <p className="text-gray-300 text-sm">
-                    {email} • {phone}
+                    {contacts.email} • {contacts.phone}
                   </p>
                 </div>
               </div>

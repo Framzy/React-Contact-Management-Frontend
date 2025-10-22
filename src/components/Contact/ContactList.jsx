@@ -16,9 +16,21 @@ export default function ContactList() {
 
   function getPages() {
     const pages = [];
-    for (let i = 1; i <= totalPage; i++) {
-      pages.push(i);
+
+    if (totalPage <= 5) {
+      // Semua halaman ditampilkan
+      for (let i = 1; i <= totalPage; i++) pages.push(i);
+    } else {
+      // Banyak halaman
+      if (page <= 3) {
+        pages.push(1, 2, 3, "...", totalPage);
+      } else if (page >= totalPage - 2) {
+        pages.push(1, "...", totalPage - 2, totalPage - 1, totalPage);
+      } else {
+        pages.push(1, "...", page, "...", totalPage);
+      }
     }
+
     return pages;
   }
 
@@ -298,19 +310,66 @@ export default function ContactList() {
           ))}
         </div>
 
-        <div className="mt-10 flex justify-center">
-          <nav className="flex items-center space-x-3 bg-gray-800 bg-opacity-80 rounded-xl shadow-custom border border-gray-700 p-3 animate-fade-in">
+        <div className="mt-10 flex justify-center ">
+          <nav className="flex flex-wrap gap-2 justify-center items-center space-x-3 bg-gray-800 bg-opacity-80 rounded-xl shadow-custom border border-gray-700 p-3 animate-fade-in">
+            {/* Previous button */}
             {page > 1 && (
-              <a
-                href="#"
+              <button
                 onClick={() => handlePageChange(page - 1)}
                 className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center"
               >
                 <i className="fas fa-chevron-left mr-2" /> Previous
-              </a>
+              </button>
             )}
 
-            {getPages().map((value) => {
+            {/* Page numbers */}
+            {getPages().map((value, index) => {
+              if (value === "...") {
+                return (
+                  <span
+                    key={`ellipsis-${index}`}
+                    className="px-4 py-2 text-gray-400 cursor-default select-none"
+                  >
+                    ...
+                  </span>
+                );
+              }
+
+              const isActive = value === page;
+
+              return (
+                <button
+                  key={value}
+                  onClick={() => handlePageChange(value)}
+                  className={`px-4 py-2 rounded-lg  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 ${
+                    isActive
+                      ? "bg-gradient text-white font-medium shadow-md hover:opacity-90 "
+                      : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  }`}
+                >
+                  {value}
+                </button>
+              );
+            })}
+
+            {/* Next button */}
+            {page < totalPage && (
+              <button
+                onClick={() => handlePageChange(page + 1)}
+                className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center"
+              >
+                Next <i className="fas fa-chevron-right ml-2" />
+              </button>
+            )}
+          </nav>
+        </div>
+      </div>
+    </>
+  );
+}
+
+{
+  /* {getPages().map((value) => {
               if (value === page) {
                 return (
                   <a
@@ -334,20 +393,5 @@ export default function ContactList() {
                   </a>
                 );
               }
-            })}
-
-            {page < totalPage && (
-              <a
-                href="#"
-                onClick={() => handlePageChange(page + 1)}
-                className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center"
-              >
-                Next <i className="fas fa-chevron-right ml-2" />
-              </a>
-            )}
-          </nav>
-        </div>
-      </div>
-    </>
-  );
+            })} */
 }

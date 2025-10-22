@@ -49,6 +49,8 @@ export default function ContactDetail() {
     fetchAddresses().then(() => console.log("success addresses"));
   });
 
+
+
   return (
     <>
       <div>
@@ -229,7 +231,8 @@ export default function ContactDetail() {
                       >
                         <i className="fas fa-edit mr-2" /> Edit
                       </Link>
-                      <button className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center">
+                      <button 
+                      className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center">
                         <i className="fas fa-trash-alt mr-2" /> Delete
                       </button>
                     </div>

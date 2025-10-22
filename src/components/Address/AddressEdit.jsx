@@ -13,21 +13,15 @@ export default function AddressEdit() {
   const [country, setCountry] = useState("");
   const [postal_code, setPostalCode] = useState("");
 
-  const [first_name, setFirstName] = useState("");
-  const [last_name, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [contacts, setContacts] = useState([]);
+  const [addresses, setAddresses] = useState([]);
 
   async function fetchContact() {
     const response = await contactDetail(token, id);
-
     const responseBody = await response.json();
 
     if (response.status === 200) {
-      setFirstName(responseBody.data.first_name);
-      setLastName(responseBody.data.last_name);
-      setEmail(responseBody.data.email);
-      setPhone(responseBody.data.phone);
+      setContacts(responseBody.data);
     } else if (response.status === 500) {
       console.log("Internal server error");
     } else {
@@ -37,16 +31,11 @@ export default function AddressEdit() {
 
   async function fetchAddress() {
     const response = await addressDetail(token, { contactId: id, addressId });
-
     const responseBody = await response.json();
     console.log(responseBody);
 
     if (response.status === 200) {
-      setStreet(responseBody.data.street);
-      setCity(responseBody.data.city);
-      setProvince(responseBody.data.province);
-      setCountry(responseBody.data.country);
-      setPostalCode(responseBody.data.postal_code);
+      setAddresses(responseBody.data);
     } else if (response.status === 500) {
       console.log("Internal server error");
     } else {
@@ -85,11 +74,11 @@ export default function AddressEdit() {
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold text-white">
-                    {first_name}
-                    {last_name}
+                    {contacts.first_name}
+                    {contacts.last_name}
                   </h2>
                   <p className="text-gray-300 text-sm">
-                    {email} • {phone}
+                    {contacts.email} • {contacts.phone}
                   </p>
                 </div>
               </div>
@@ -113,7 +102,7 @@ export default function AddressEdit() {
                     className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                     placeholder="Enter street address"
                     required
-                    value={street}
+                    value={street || addresses.street}
                     onChange={(e) => setStreet(e.target.value)}
                   />
                 </div>

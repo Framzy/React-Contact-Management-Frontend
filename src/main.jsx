@@ -28,10 +28,12 @@ createRoot(document.getElementById("root")).render(
           <Route path="contacts">
             <Route index element={<ContactList />} />
             <Route path="create" element={<ContactCreate />} />
-            <Route path=":id" element={<ContactDetail />} />
-            <Route path=":id/edit" element={<ContactEdit />} />
-            <Route path=":id/addresses" element={<AddressCreate />} />
-            <Route path=":id/addresses/:addressId" element={<AddressEdit />} />
+            <Route path=":id">
+              <Route index element={<ContactDetail />} />
+              <Route path="edit" element={<ContactEdit />} />
+              <Route path="addresses" element={<AddressCreate />} />
+              <Route path="addresses/:addressId" element={<AddressEdit />} />
+            </Route>
           </Route>
         </Route>
       </Routes>
