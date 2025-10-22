@@ -8,7 +8,12 @@ export default function useUserLogout() {
   const navigate = useNavigate();
 
   async function handleLogout() {
-    if (!(await alertConfirm("You will be logged out from your account!"))) {
+    if (
+      !(await alertConfirm(
+        "You will be logged out from your account!",
+        "logout"
+      ))
+    ) {
       return; // batal logout
     } else {
       try {

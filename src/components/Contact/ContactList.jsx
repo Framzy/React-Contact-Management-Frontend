@@ -84,7 +84,7 @@ export default function ContactList() {
 
   useEffect(() => {
     fetchContacts().then(() => console.log("Contacts fetched successfully"));
-  }, [reload]);
+  }, [reload]); // eslint-disable-line
 
   useEffectOnce(() => {
     const toggleButton = document.getElementById("toggleSearchForm");

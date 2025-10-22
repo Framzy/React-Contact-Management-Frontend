@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router";
-import { useEffectOnce, useLocalStorage } from "react-use";
+import { useLocalStorage } from "react-use";
 import { contactDetail } from "../../lib/api/ContactApi";
 import { addressList } from "../../lib/api/AddressApi";
+import useAddressDelete from "../../hooks/useAddressDelete";
 
 export default function ContactDetail() {
   const [token, _] = useLocalStorage("token", "");
@@ -12,6 +13,22 @@ export default function ContactDetail() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [addresses, setAddresses] = useState([]);
+  const [reload, setReload] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const { handleAddressDelete } = useAddressDelete();
+
+  async function handleDelete(addressId) {
+    setLoading(true);
+    await handleAddressDelete(id, addressId);
+    setLoading(false);
+    setReload(!reload);
+  }
+
+  useEffect(() => {
+    fetchContact().then(() => console.log("success"));
+    fetchAddresses().then(() => console.log("success addresses"));
+  }, [reload]); // eslint-disable-line
 
   async function fetchContact() {
     const response = await contactDetail(token, id);
@@ -43,11 +60,6 @@ export default function ContactDetail() {
       console.log(responseBody.errors);
     }
   }
-
-  useEffectOnce(() => {
-    fetchContact().then(() => console.log("success"));
-    fetchAddresses().then(() => console.log("success addresses"));
-  });
 
   function shortText(text) {
     if (text.length > 13) {
@@ -237,7 +249,10 @@ export default function ContactDetail() {
                       >
                         <i className="fas fa-edit mr-2" /> Edit
                       </Link>
-                      <button className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center">
+                      <button
+                        onClick={() => handleDelete(address.id)}
+                        className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center"
+                      >
                         <i className="fas fa-trash-alt mr-2" /> Delete
                       </button>
                     </div>
