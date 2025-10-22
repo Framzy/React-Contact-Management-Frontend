@@ -316,7 +316,7 @@ export default function ContactList() {
             {page > 1 && (
               <button
                 onClick={() => handlePageChange(page - 1)}
-                className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center"
+                className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center hover:cursor-pointer"
               >
                 <i className="fas fa-chevron-left mr-2" /> Previous
               </button>
@@ -341,7 +341,7 @@ export default function ContactList() {
                 <button
                   key={value}
                   onClick={() => handlePageChange(value)}
-                  className={`px-4 py-2 rounded-lg  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 ${
+                  className={`px-4 py-2 rounded-lg  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 hover:cursor-pointer ${
                     isActive
                       ? "bg-gradient text-white font-medium shadow-md hover:opacity-90 "
                       : "bg-gray-700 text-gray-300 hover:bg-gray-600"
@@ -356,7 +356,7 @@ export default function ContactList() {
             {page < totalPage && (
               <button
                 onClick={() => handlePageChange(page + 1)}
-                className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center"
+                className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center hover:cursor-pointer"
               >
                 Next <i className="fas fa-chevron-right ml-2" />
               </button>
@@ -366,32 +366,4 @@ export default function ContactList() {
       </div>
     </>
   );
-}
-
-{
-  /* {getPages().map((value) => {
-              if (value === page) {
-                return (
-                  <a
-                    key={value}
-                    href="#"
-                    onClick={() => handlePageChange(value)}
-                    className="px-4 py-2 bg-gradient text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md"
-                  >
-                    {value}
-                  </a>
-                );
-              } else {
-                return (
-                  <a
-                    key={value}
-                    href="#"
-                    onClick={() => handlePageChange(value)}
-                    className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200"
-                  >
-                    {value}
-                  </a>
-                );
-              }
-            })} */
 }

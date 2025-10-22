@@ -4,17 +4,16 @@ import { useLocalStorage } from "react-use";
 import { contactDetail } from "../../lib/api/ContactApi";
 import { addressList } from "../../lib/api/AddressApi";
 import useAddressDelete from "../../hooks/useAddressDelete";
+import Loader from "../Common/Loader";
 
 export default function ContactDetail() {
   const [token, _] = useLocalStorage("token", "");
   const { id } = useParams();
-  const [first_name, setFirstName] = useState("");
-  const [last_name, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+
   const [addresses, setAddresses] = useState([]);
+  const [contacts, setContacts] = useState([]);
   const [reload, setReload] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { handleAddressDelete } = useAddressDelete();
 
@@ -26,8 +25,12 @@ export default function ContactDetail() {
   }
 
   useEffect(() => {
-    fetchContact().then(() => console.log("success"));
-    fetchAddresses().then(() => console.log("success addresses"));
+    fetchContact()
+      .then(() => console.log("success"))
+      .finally(() => setLoading(false));
+    fetchAddresses()
+      .then(() => console.log("success addresses"))
+      .finally(() => setLoading(false));
   }, [reload]); // eslint-disable-line
 
   async function fetchContact() {
@@ -36,10 +39,7 @@ export default function ContactDetail() {
     const responseBody = await response.json();
 
     if (response.status === 200) {
-      setFirstName(responseBody.data.first_name);
-      setLastName(responseBody.data.last_name);
-      setEmail(responseBody.data.email);
-      setPhone(responseBody.data.phone);
+      setContacts(responseBody.data);
     } else if (response.status === 500) {
       console.log("Internal server error");
     } else {
@@ -69,6 +69,14 @@ export default function ContactDetail() {
     }
   }
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader size={60} color="#16b6ff" />
+      </div>
+    );
+  }
+
   return (
     <>
       <div>
@@ -90,7 +98,7 @@ export default function ContactDetail() {
                 <i className="fas fa-user text-3xl text-white" />
               </div>
               <h2 className="text-2xl font-bold text-white mb-2">
-                {first_name} {last_name}
+                {contacts.first_name} {contacts.last_name}
               </h2>
               <div className="w-24 h-1 bg-gradient mx-auto rounded-full" />
             </div>
@@ -104,7 +112,9 @@ export default function ContactDetail() {
                       First Name
                     </h3>
                   </div>
-                  <p className="text-white text-lg ml-6">{first_name}</p>
+                  <p className="text-white text-lg ml-6">
+                    {contacts.first_name}
+                  </p>
                 </div>
                 <div className="bg-gray-700 bg-opacity-50 p-5 rounded-lg shadow-md border border-gray-600 transition-all duration-200 hover:bg-opacity-70">
                   <div className="flex items-center mb-2">
@@ -113,7 +123,9 @@ export default function ContactDetail() {
                       Last Name
                     </h3>
                   </div>
-                  <p className="text-white text-lg ml-6">{last_name}</p>
+                  <p className="text-white text-lg ml-6">
+                    {contacts.last_name}
+                  </p>
                 </div>
               </div>
               <div className="bg-gray-700 bg-opacity-50 p-5 rounded-lg shadow-md border border-gray-600 transition-all duration-200 hover:bg-opacity-70">
@@ -121,14 +133,14 @@ export default function ContactDetail() {
                   <i className="fas fa-envelope text-blue-400 mr-2" />
                   <h3 className="text-gray-300 text-sm font-medium">Email</h3>
                 </div>
-                <p className="text-white text-lg ml-6">{email}</p>
+                <p className="text-white text-lg ml-6">{contacts.email}</p>
               </div>
               <div className="bg-gray-700 bg-opacity-50 p-5 rounded-lg shadow-md border border-gray-600 transition-all duration-200 hover:bg-opacity-70">
                 <div className="flex items-center mb-2">
                   <i className="fas fa-phone text-blue-400 mr-2" />
                   <h3 className="text-gray-300 text-sm font-medium">Phone</h3>
                 </div>
-                <p className="text-white text-lg ml-6">{phone}</p>
+                <p className="text-white text-lg ml-6">{contacts.phone}</p>
               </div>
             </div>
 
@@ -196,7 +208,7 @@ export default function ContactDetail() {
                     >
                       <i className="fas fa-edit mr-2" /> Edit
                     </Link>
-                    <button className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center">
+                    <button className="px-4 py-2 bg-linear-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center hover:cursor-pointer">
                       <i className="fas fa-trash-alt mr-2" /> Delete
                     </button>
                   </div>
@@ -205,7 +217,7 @@ export default function ContactDetail() {
                 {addresses.map((address) => (
                   <div
                     key={address.id}
-                    className="bg-gray-700 bg-opacity-50 p-5 rounded-lg shadow-md border border-gray-600 card-hover"
+                    className="bg-gray-700 bg-opacity-50 p-5 rounded-lg shadow-md border border-gray-600 card-hover "
                   >
                     <div className="flex items-center mb-3">
                       <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center mr-3 shadow-md">
@@ -251,7 +263,7 @@ export default function ContactDetail() {
                       </Link>
                       <button
                         onClick={() => handleDelete(address.id)}
-                        className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center"
+                        className="px-4 py-2 bg-linear-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center hover:cursor-pointer"
                       >
                         <i className="fas fa-trash-alt mr-2" /> Delete
                       </button>

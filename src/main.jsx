@@ -12,6 +12,8 @@ import ContactEdit from "./components/Contact/ContactEdit";
 import ContactDetail from "./components/Contact/ContactDetail";
 import AddressCreate from "./components/Address/AddressCreate";
 import AddressEdit from "./components/Address/AddressEdit";
+import "./styles/loader.css";
+import "./styles/index.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
