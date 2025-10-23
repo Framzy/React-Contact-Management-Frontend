@@ -1,4 +1,3 @@
-@import url("/src/styles/components.css");
 @import "tailwindcss";
 
 .bg-gradient {
@@ -23,4 +22,22 @@
 .card-hover:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.3);
+}
+
+@layer components {
+  /* Loader reusable (kalau nanti mau dipakai di page lain juga) */
+  .loader {
+    @apply inline-block rounded-full border-4 border-transparent animate-spin;
+    border-top-color: var(--loader-color);
+  }
+
+  /* Judul Error */
+  .error-title {
+    @apply text-lg sm:text-3xl md:text-4xl;
+  }
+
+  /* Pesan Error */
+  .error-message {
+    @apply text-sm sm:text-base md:text-lg;
+  }
 }

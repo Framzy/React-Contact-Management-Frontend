@@ -1,6 +1,0 @@
-@layer components {
-  .loader {
-    @apply inline-block rounded-full border-4 border-transparent animate-spin;
-    border-top-color: var(--loader-color);
-  }
-}
