@@ -1,40 +1,28 @@
 import { useState } from "react";
-import { alertError, alertSuccess } from "../../lib/alert";
+import { alertError } from "../../lib/alert";
 import { userRegister } from "../../lib/api/UserApi";
-import { useNavigate, Link } from "react-router";
+import { Link } from "react-router";
+import useAdd from "../../hooks/crud/useAdd";
 
 export default function UserRegister() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const navigate = useNavigate();
+
+  const { handleAdd } = useAdd(
+    userRegister,
+    "/login",
+    "User registered successfully",
+    "Failed to register user. Please try again."
+  );
 
   async function handleSubmit(e) {
-    e.preventDefault();
-
     if (password !== confirmPassword) {
       await alertError("Passwords do not match");
       return;
     }
-
-    const response = await userRegister({
-      username,
-      password,
-      name,
-    });
-
-    const responseBody = await response.json();
-    console.log(responseBody);
-
-    if (response.status === 200) {
-      await alertSuccess("User created successfully");
-      await navigate({
-        pathname: "/login",
-      });
-    } else {
-      await alertError(responseBody.errors);
-    }
+    await handleAdd(e, { username, password, name });
   }
 
   return (

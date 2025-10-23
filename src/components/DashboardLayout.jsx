@@ -6,7 +6,7 @@ export default function DashboardLayout() {
 
   return (
     <>
-      <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen flex flex-col">
+      <div className="bg-linear-to-br from-gray-900 to-gray-800 min-h-screen flex flex-col">
         <header className="bg-gradient shadow-lg">
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <Link
@@ -32,7 +32,7 @@ export default function DashboardLayout() {
                 <li>
                   <button
                     onClick={handleLogout}
-                    className="text-gray-100 hover:text-white flex items-center transition-colors duration-200"
+                    className="text-gray-100 hover:text-white flex items-center transition-colors duration-200 hover:cursor-pointer"
                   >
                     <i className="fas fa-sign-out-alt mr-2" />
                     <span>Logout</span>
@@ -43,7 +43,7 @@ export default function DashboardLayout() {
           </div>
         </header>
 
-        <main className="container mx-auto px-4 py-8 flex-grow">
+        <main className="container mx-auto px-4 py-8 grow">
           <Outlet />
 
           <div className="mt-10 mb-6 text-center text-gray-400 text-sm animate-fade-in">

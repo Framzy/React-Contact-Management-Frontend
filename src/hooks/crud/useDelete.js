@@ -1,5 +1,5 @@
 import { useLocalStorage } from "react-use";
-import { alertConfirm, alertError, alertSuccess } from "../lib/alert";
+import { alertConfirm, alertError, alertSuccess } from "../../lib/alert";
 /**
  * Reusable delete hook
  * @param {Function} apiDeleteFn - fungsi API yang melakukan delete (misal contactDelete, addressDelete)

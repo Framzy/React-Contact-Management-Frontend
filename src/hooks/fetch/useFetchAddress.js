@@ -1,5 +1,5 @@
 import { useLocalStorage } from "react-use";
-import { addressDetail } from "../lib/api/AddressApi";
+import { addressDetail } from "../../lib/api/AddressApi";
 
 export default function useFetchAddress(id, addressId, setAddress) {
   const [token] = useLocalStorage("token", "");

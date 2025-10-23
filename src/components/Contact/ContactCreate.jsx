@@ -1,43 +1,23 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
-import { useLocalStorage } from "react-use";
+import { Link } from "react-router";
+import useAdd from "../../hooks/crud/useAdd";
 import { contactCreate } from "../../lib/api/ContactApi";
-import { alertError, alertSuccess } from "../../lib/alert";
 
 export default function ContactCreate() {
-  const [token, _] = useLocalStorage("token", "");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const navigate = useNavigate();
+
+  const { handleAdd } = useAdd(contactCreate, "/dashboard/contacts");
 
   async function handleSubmit(e) {
-    e.preventDefault();
-
-    const response = await contactCreate(token, {
-      first_name: firstName,
-      last_name: lastName,
+    await handleAdd(e, {
+      first_name,
+      last_name,
       email,
       phone,
     });
-
-    const responseBody = await response.json();
-    console.log(responseBody);
-
-    if (response.status === 200) {
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPhone("");
-
-      await alertSuccess("Contact created successfully");
-      await navigate("/dashboard/contacts");
-    } else if (response.status === 500) {
-      await alertError("Internal server error");
-    } else {
-      await alertError(responseBody.errors);
-    }
   }
 
   return (
@@ -77,7 +57,7 @@ export default function ContactCreate() {
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter first name"
                       required
-                      value={firstName}
+                      value={first_name}
                       onChange={(e) => setFirstName(e.target.value)}
                     />
                   </div>
@@ -100,7 +80,7 @@ export default function ContactCreate() {
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter last name"
                       required
-                      value={lastName}
+                      value={last_name}
                       onChange={(e) => setLastName(e.target.value)}
                     />
                   </div>

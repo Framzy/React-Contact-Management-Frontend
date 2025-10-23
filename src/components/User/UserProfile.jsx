@@ -1,11 +1,8 @@
 import { useState } from "react";
 import { alertError, alertSuccess } from "../../lib/alert";
-import {
-  userDetail,
-  userUpdateProfile,
-  userUpdatePassword,
-} from "../../lib/api/UserApi";
+import { userUpdateProfile, userUpdatePassword } from "../../lib/api/UserApi";
 import { useLocalStorage, useEffectOnce } from "react-use";
+import useFetchUserDetail from "../../hooks/fetch/useFetchUserDetail";
 
 export default function UserProfile() {
   const [name, setName] = useState("");
@@ -13,24 +10,10 @@ export default function UserProfile() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [token, _] = useLocalStorage("token", null);
 
-  async function fetchUserDetail() {
-    const response = await userDetail({ token });
-    const responseBody = await response.json();
-    console.log(responseBody);
-
-    if (response.status === 200) {
-      setName(responseBody.data.name);
-    } else if (response.status === 500) {
-      await alertError("Internal server error");
-    } else {
-      await alertError(responseBody.errors);
-    }
-  }
+  const { fetchUserDetail } = useFetchUserDetail(setName);
 
   useEffectOnce(() => {
-    fetchUserDetail().then(() =>
-      console.log("User detail fetched successfully")
-    );
+    fetchUserDetail();
   }, []);
 
   async function handleSubmitProfile(e) {
@@ -73,7 +56,7 @@ export default function UserProfile() {
 
   return (
     <>
-      <main className="container mx-auto px-4 py-8 flex-grow">
+      <main className="container mx-auto px-4 py-8 grow">
         <div className="flex items-center mb-6">
           <i className="fas fa-user-cog text-blue-400 text-2xl mr-3" />
           <h1 className="text-2xl font-bold text-white">My Profile</h1>

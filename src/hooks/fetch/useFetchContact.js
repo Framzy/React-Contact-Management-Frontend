@@ -1,5 +1,5 @@
 import { useLocalStorage } from "react-use";
-import { contactDetail } from "../lib/api/ContactApi";
+import { contactDetail } from "../../lib/api/ContactApi";
 
 export default function useFetchContact(id, setContacts) {
   const [token, _] = useLocalStorage("token", "");

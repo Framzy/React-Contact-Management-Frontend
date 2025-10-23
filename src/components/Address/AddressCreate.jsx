@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
-import { useEffectOnce, useLocalStorage } from "react-use";
+import { Link, useParams } from "react-router";
+import { useEffectOnce } from "react-use";
 import { addressCreate } from "../../lib/api/AddressApi";
-import { alertError, alertSuccess } from "../../lib/alert";
-import { contactDetail } from "../../lib/api/ContactApi";
 import Loader from "../Common/Loader";
+import useFetchContact from "../../hooks/fetch/useFetchContact";
+import useAdd from "../../hooks/crud/useAdd";
 
 export default function AddressCreate() {
-  const [token, _] = useLocalStorage("token", "");
   const { id } = useParams();
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
@@ -17,52 +16,27 @@ export default function AddressCreate() {
 
   const [loading, setLoading] = useState(true);
   const [contacts, setContacts] = useState([]);
-  const navigate = useNavigate();
 
-  async function fetchContact() {
-    const response = await contactDetail(token, id);
-    const responseBody = await response.json();
-
-    if (response.status === 200) {
-      setContacts(responseBody.data);
-    } else if (response.status === 500) {
-      console.log("Internal server error");
-    } else {
-      console.log(responseBody.errors);
-    }
-  }
+  const { fetchContact } = useFetchContact(id, setContacts);
+  const { handleAdd } = useAdd(addressCreate, `/dashboard/contacts/${id}`);
 
   useEffectOnce(() => {
-    fetchContact()
-      .then(() => console.log("success"))
-      .finally(() => setLoading(false));
+    fetchContact().finally(() => setLoading(false));
   });
 
   async function handleSubmit(e) {
-    e.preventDefault();
-
     setLoading(true);
-    const response = await addressCreate(token, id, {
-      street,
-      city,
-      province,
-      country,
-      postal_code,
-    });
-
-    const responseBody = await response.json();
-    console.log(responseBody);
-
-    if (response.status === 200) {
-      await alertSuccess("Address created successfully");
-      await navigate({
-        pathname: `/dashboard/contacts/${id}`,
-      });
-    } else if (response.status === 500) {
-      await alertError("Internal server error");
-    } else {
-      await alertError(responseBody.errors);
-    }
+    await handleAdd(
+      e,
+      {
+        street,
+        city,
+        province,
+        country,
+        postal_code,
+      },
+      id
+    );
   }
 
   if (loading) {

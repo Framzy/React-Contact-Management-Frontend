@@ -1,6 +1,6 @@
 import { useLocalStorage } from "react-use";
-import { contactList } from "../lib/api/ContactApi";
-import { alertError } from "../lib/alert";
+import { contactList } from "../../lib/api/ContactApi";
+import { alertError } from "../../lib/alert";
 
 export default function useFetchContactList(
   payload,

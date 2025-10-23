@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { contactDelete } from "../../lib/api/ContactApi";
 import useGetPages from "../../hooks/useGetPages";
-import useDelete from "../../hooks/useDelete";
+import useDelete from "../../hooks/crud/useDelete";
 import useToggleAnimation from "../../hooks/useToggleAnimation";
-import useFetchContactList from "../../hooks/useFetchContactList";
+import useFetchContactList from "../../hooks/fetch/useFetchContactList";
 
 export default function ContactList() {
   const [name, setName] = useState("");

@@ -4,8 +4,8 @@ import { useEffectOnce, useLocalStorage } from "react-use";
 import { addressEdit } from "../../lib/api/AddressApi";
 import { alertError, alertSuccess } from "../../lib/alert";
 import Loader from "../Common/Loader";
-import useFetchContact from "../../hooks/useFetchContact";
-import useFetchAddress from "../../hooks/useFetchAddress";
+import useFetchContact from "../../hooks/fetch/useFetchContact";
+import useFetchAddress from "../../hooks/fetch/useFetchAddress";
 
 export default function AddressEdit() {
   const { id, addressId } = useParams();
