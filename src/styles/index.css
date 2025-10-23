@@ -1,5 +1,5 @@
+@import url("/src/styles/components.css");
 @import "tailwindcss";
-@import "/src/styles/components.css";
 
 .bg-gradient {
   background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
