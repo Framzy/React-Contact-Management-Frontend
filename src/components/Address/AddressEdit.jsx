@@ -1,54 +1,28 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { useEffectOnce, useLocalStorage } from "react-use";
-import { addressDetail, addressEdit } from "../../lib/api/AddressApi";
-import { contactDetail } from "../../lib/api/ContactApi";
+import { addressEdit } from "../../lib/api/AddressApi";
 import { alertError, alertSuccess } from "../../lib/alert";
 import Loader from "../Common/Loader";
+import useFetchContact from "../../hooks/useFetchContact";
+import useFetchAddress from "../../hooks/useFetchAddress";
 
 export default function AddressEdit() {
   const { id, addressId } = useParams();
-  const [token, _] = useLocalStorage("token", "");
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [province, setProvince] = useState("");
-  const [country, setCountry] = useState("");
-  const [postal_code, setPostalCode] = useState("");
-
+  const [token] = useLocalStorage("token", "");
   const [loading, setLoading] = useState(true);
   const [contacts, setContacts] = useState([]);
+  const [addresses, setAddresses] = useState({
+    street: "",
+    city: "",
+    province: "",
+    country: "",
+    postal_code: "",
+  });
   const navigate = useNavigate();
 
-  async function fetchContact() {
-    const response = await contactDetail(token, id);
-    const responseBody = await response.json();
-
-    if (response.status === 200) {
-      setContacts(responseBody.data);
-    } else if (response.status === 500) {
-      console.log("Internal server error");
-    } else {
-      console.log(responseBody.errors);
-    }
-  }
-
-  async function fetchAddress() {
-    const response = await addressDetail(token, { contactId: id, addressId });
-    const responseBody = await response.json();
-    console.log(responseBody);
-
-    if (response.status === 200) {
-      setStreet(responseBody.data.street);
-      setCity(responseBody.data.city);
-      setProvince(responseBody.data.province);
-      setCountry(responseBody.data.country);
-      setPostalCode(responseBody.data.postal_code);
-    } else if (response.status === 500) {
-      console.log("Internal server error");
-    } else {
-      console.log(responseBody.errors);
-    }
-  }
+  const { fetchContact } = useFetchContact(id, setContacts);
+  const { fetchAddress } = useFetchAddress(id, addressId, setAddresses);
 
   useEffectOnce(() => {
     async function init() {
@@ -70,11 +44,7 @@ export default function AddressEdit() {
     const response = await addressEdit(token, {
       contactId: id,
       addressId,
-      street,
-      city,
-      province,
-      country,
-      postal_code,
+      ...addresses,
     });
 
     const responseBody = await response.json();
@@ -151,8 +121,13 @@ export default function AddressEdit() {
                     className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                     placeholder="Enter street address"
                     required
-                    value={street}
-                    onChange={(e) => setStreet(e.target.value)}
+                    value={addresses["street"]}
+                    onChange={(e) =>
+                      setAddresses((prev) => ({
+                        ...prev,
+                        street: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </div>
@@ -175,8 +150,13 @@ export default function AddressEdit() {
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter city"
                       required
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
+                      value={addresses["city"]}
+                      onChange={(e) =>
+                        setAddresses((prev) => ({
+                          ...prev,
+                          city: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                 </div>
@@ -198,8 +178,13 @@ export default function AddressEdit() {
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter province or state"
                       required
-                      value={province}
-                      onChange={(e) => setProvince(e.target.value)}
+                      value={addresses["province"]}
+                      onChange={(e) =>
+                        setAddresses((prev) => ({
+                          ...prev,
+                          province: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                 </div>
@@ -223,8 +208,13 @@ export default function AddressEdit() {
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter country"
                       required
-                      value={country}
-                      onChange={(e) => setCountry(e.target.value)}
+                      value={addresses["country"]}
+                      onChange={(e) =>
+                        setAddresses((prev) => ({
+                          ...prev,
+                          country: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                 </div>
@@ -246,8 +236,13 @@ export default function AddressEdit() {
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter postal code"
                       required
-                      value={postal_code}
-                      onChange={(e) => setPostalCode(e.target.value)}
+                      value={addresses["postal_code"]}
+                      onChange={(e) =>
+                        setAddresses((prev) => ({
+                          ...prev,
+                          postal_code: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                 </div>

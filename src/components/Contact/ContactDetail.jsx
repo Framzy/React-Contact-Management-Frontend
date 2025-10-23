@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { useEffectOnce, useLocalStorage } from "react-use";
-import { contactDetail } from "../../lib/api/ContactApi";
-import { addressList } from "../../lib/api/AddressApi";
-import useAddressDelete from "../../hooks/useAddressDelete";
+import { addressDelete, addressList } from "../../lib/api/AddressApi";
+import useDelete from "../../hooks/useDelete";
 import Loader from "../Common/Loader";
+import shortText from "../../utils/shortText";
+import useFetchContact from "../../hooks/useFetchContact";
 
 export default function ContactDetail() {
   const [token, _] = useLocalStorage("token", "");
@@ -14,33 +15,25 @@ export default function ContactDetail() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { handleAddressDelete } = useAddressDelete();
+  const { handleDelete: handleAddressDelete } = useDelete(addressDelete, {
+    confirmMessage: "Are you sure you want to delete this address?",
+    successMessage: "Address deleted successfully",
+    errorMessage: "Failed to delete address. Please try again.",
+  });
 
   async function handleDelete(addressId) {
     setLoading(true);
-    await handleAddressDelete(id, addressId);
+    await handleAddressDelete({ contactId: id, addressId });
     fetchAddresses();
     setLoading(false);
   }
+
+  const { fetchContact } = useFetchContact(id, setContacts);
 
   useEffectOnce(() => {
     fetchContact().finally(() => setLoading(false));
     fetchAddresses().finally(() => setLoading(false));
   });
-
-  async function fetchContact() {
-    const response = await contactDetail(token, id);
-
-    const responseBody = await response.json();
-
-    if (response.status === 200) {
-      setContacts(responseBody.data);
-    } else if (response.status === 500) {
-      console.log("Internal server error");
-    } else {
-      console.log(responseBody.errors);
-    }
-  }
 
   async function fetchAddresses() {
     const response = await addressList(token, { contactId: id });
@@ -53,14 +46,6 @@ export default function ContactDetail() {
       console.log("Internal server error");
     } else {
       console.log(responseBody.errors);
-    }
-  }
-
-  function shortText(text) {
-    if (text.length > 13) {
-      return (text = text.substring(0, 13) + "...");
-    } else {
-      return text;
     }
   }
 

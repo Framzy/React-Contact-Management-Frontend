@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { useEffectOnce, useLocalStorage } from "react-use";
-import { contactDelete, contactList } from "../../lib/api/ContactApi";
-import { alertConfirm, alertError, alertSuccess } from "../../lib/alert";
+import { contactDelete } from "../../lib/api/ContactApi";
 import useGetPages from "../../hooks/useGetPages";
+import useDelete from "../../hooks/useDelete";
+import useToggleAnimation from "../../hooks/useToggleAnimation";
+import useFetchContactList from "../../hooks/useFetchContactList";
 
 export default function ContactList() {
-  const [token, _] = useLocalStorage("token", "");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -15,24 +15,19 @@ export default function ContactList() {
   const [contacts, setContacts] = useState([]);
   const [reload, setReload] = useState(false);
 
+  const { toggle, contentRef, iconRef } = useToggleAnimation(300);
   const { getPages } = useGetPages();
   const pages = getPages(totalPage, page);
 
-  async function handleDeleteContact(id) {
-    if (
-      !(await alertConfirm("Are you sure you want to delete this contact?"))
-    ) {
-      return; // batal delete
-    }
+  const { handleDelete: handleContactDelete } = useDelete(contactDelete, {
+    confirmMessage: "Are you sure you want to delete this contact?",
+    successMessage: "Contact deleted successfully",
+    errorMessage: "Failed to delete contact. Please try again.",
+  });
 
-    const response = await contactDelete(token, id);
-
-    if (response.status === 200) {
-      await alertSuccess("Contact deleted successfully");
-      setReload(!reload);
-    } else {
-      await alertError("Failed to delete contact. Please try again.");
-    }
+  async function handleDelete(id) {
+    await handleContactDelete(id);
+    setReload(!reload);
   }
 
   async function handleSearchContact(e) {
@@ -46,68 +41,20 @@ export default function ContactList() {
     setReload(!reload);
   }
 
-  async function fetchContacts() {
-    const response = await contactList(token, {
+  const { fetchContacts } = useFetchContactList(
+    {
       name,
       email,
       phone,
       page,
-    });
-
-    const responseBody = await response.json();
-
-    if (response.status === 200) {
-      setContacts(responseBody.data);
-      setTotalPage(responseBody.paging.total_page);
-    } else if (response.status === 500) {
-      await alertError("Internal server error");
-    } else {
-      await alertError(responseBody.errors);
-    }
-  }
+    },
+    setContacts,
+    setTotalPage
+  );
 
   useEffect(() => {
-    fetchContacts().then(() => console.log("Contacts fetched successfully"));
-  }, [reload]); // eslint-disable-line
-
-  useEffectOnce(() => {
-    const toggleButton = document.getElementById("toggleSearchForm");
-    const searchFormContent = document.getElementById("searchFormContent");
-    const toggleIcon = document.getElementById("toggleSearchIcon");
-
-    // Add transition for smooth animation
-    searchFormContent.style.transition =
-      "max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, margin 0.3s ease-in-out";
-    searchFormContent.style.overflow = "hidden";
-    searchFormContent.style.maxHeight = "0px";
-    searchFormContent.style.opacity = "0";
-    searchFormContent.style.marginTop = "0";
-
-    function toggleSearchForm() {
-      if (searchFormContent.style.maxHeight !== "0px") {
-        // Hide the form
-        searchFormContent.style.maxHeight = "0px";
-        searchFormContent.style.opacity = "0";
-        searchFormContent.style.marginTop = "0";
-        toggleIcon.classList.remove("fa-chevron-up");
-        toggleIcon.classList.add("fa-chevron-down");
-      } else {
-        // Show the form
-        searchFormContent.style.maxHeight =
-          searchFormContent.scrollHeight + "px";
-        searchFormContent.style.opacity = "1";
-        searchFormContent.style.marginTop = "1rem";
-        toggleIcon.classList.remove("fa-chevron-down");
-        toggleIcon.classList.add("fa-chevron-up");
-      }
-    }
-
-    toggleButton.addEventListener("click", toggleSearchForm);
-
-    return () => {
-      toggleButton.removeEventListener("click", toggleSearchForm);
-    };
-  });
+    fetchContacts();
+  }, [page, name, email, phone, reload]); // eslint-disable-line
 
   return (
     <>
@@ -127,16 +74,13 @@ export default function ContactList() {
             </div>
             <button
               type="button"
-              id="toggleSearchForm"
+              onClick={toggle}
               className="text-gray-300 hover:text-white hover:bg-gray-700 p-2 rounded-full focus:outline-none transition-all duration-200"
             >
-              <i
-                className="fas fa-chevron-down text-lg"
-                id="toggleSearchIcon"
-              />
+              <i className="fas fa-chevron-down text-lg" ref={iconRef} />
             </button>
           </div>
-          <div id="searchFormContent" className="mt-4">
+          <div ref={contentRef} className="mt-4">
             <form onSubmit={handleSearchContact}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div>
@@ -283,8 +227,8 @@ export default function ContactList() {
                     <i className="fas fa-edit mr-2" /> Edit
                   </Link>
                   <button
-                    onClick={() => handleDeleteContact(contact.id)}
-                    className="px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center"
+                    onClick={() => handleDelete(contact.id)}
+                    className="px-4 py-2 bg-linear-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center"
                   >
                     <i className="fas fa-trash-alt mr-2" /> Delete
                   </button>
