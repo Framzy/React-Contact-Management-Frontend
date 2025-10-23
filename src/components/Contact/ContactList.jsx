@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { useEffectOnce, useLocalStorage } from "react-use";
 import { contactDelete, contactList } from "../../lib/api/ContactApi";
 import { alertConfirm, alertError, alertSuccess } from "../../lib/alert";
+import useGetPages from "../../hooks/useGetPages";
 
 export default function ContactList() {
   const [token, _] = useLocalStorage("token", "");
@@ -14,25 +15,8 @@ export default function ContactList() {
   const [contacts, setContacts] = useState([]);
   const [reload, setReload] = useState(false);
 
-  function getPages() {
-    const pages = [];
-
-    if (totalPage <= 5) {
-      // Semua halaman ditampilkan
-      for (let i = 1; i <= totalPage; i++) pages.push(i);
-    } else {
-      // Banyak halaman
-      if (page <= 3) {
-        pages.push(1, 2, 3, "...", totalPage);
-      } else if (page >= totalPage - 2) {
-        pages.push(1, "...", totalPage - 2, totalPage - 1, totalPage);
-      } else {
-        pages.push(1, "...", page, "...", totalPage);
-      }
-    }
-
-    return pages;
-  }
+  const { getPages } = useGetPages();
+  const pages = getPages(totalPage, page);
 
   async function handleDeleteContact(id) {
     if (
@@ -323,7 +307,7 @@ export default function ContactList() {
             )}
 
             {/* Page numbers */}
-            {getPages().map((value, index) => {
+            {pages.map((value, index) => {
               if (value === "...") {
                 return (
                   <span

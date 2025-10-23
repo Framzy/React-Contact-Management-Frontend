@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useParams } from "react-router";
-import { useLocalStorage } from "react-use";
+import { useEffectOnce, useLocalStorage } from "react-use";
 import { contactDetail } from "../../lib/api/ContactApi";
 import { addressList } from "../../lib/api/AddressApi";
 import useAddressDelete from "../../hooks/useAddressDelete";
@@ -23,13 +23,9 @@ export default function ContactDetail() {
     setLoading(false);
   }
 
-  useEffect(() => {
-    fetchContact()
-      .then(() => console.log("success"))
-      .finally(() => setLoading(false));
-    fetchAddresses()
-      .then(() => console.log("success addresses"))
-      .finally(() => setLoading(false));
+  useEffectOnce(() => {
+    fetchContact().finally(() => setLoading(false));
+    fetchAddresses().finally(() => setLoading(false));
   });
 
   async function fetchContact() {

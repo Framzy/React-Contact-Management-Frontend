@@ -1,19 +1,21 @@
 import { Outlet, useNavigate, useLocation } from "react-router";
-import { useEffectOnce, useLocalStorage } from "react-use";
+import { useEffect } from "react";
+import { useLocalStorage } from "react-use";
 
 export default function UserCheck() {
   const [token] = useLocalStorage("token", "");
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffectOnce(() => {
-    if (token && location.pathname === "/") {
-      navigate("/dashboard/contacts");
+  useEffect(() => {
+    if (location.pathname === "/") {
+      if (token) {
+        navigate("/dashboard/contacts", { replace: true });
+      } else {
+        navigate("/login", { replace: true });
+      }
     }
-    if (!token && location.pathname === "/") {
-      navigate("/login");
-    }
-  });
+  }, [token, location.pathname, navigate]);
 
   return <Outlet />;
 }
