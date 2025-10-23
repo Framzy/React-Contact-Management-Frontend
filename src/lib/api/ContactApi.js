@@ -20,7 +20,8 @@ export const contactCreate = async (
 
 export const contactEdit = async (
   token,
-  { id, first_name, last_name, email, phone }
+  id,
+  { first_name, last_name, email, phone }
 ) => {
   return await fetch(`${import.meta.env.VITE_API_PATH}/contacts/${id}`, {
     method: "PUT",

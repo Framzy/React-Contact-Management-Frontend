@@ -1,61 +1,36 @@
-import { Link, useNavigate, useParams } from "react-router";
-import { contactDetail, contactEdit } from "../../lib/api/ContactApi";
-import { useEffectOnce, useLocalStorage } from "react-use";
+import { Link, useParams } from "react-router";
+import { contactEdit } from "../../lib/api/ContactApi";
+import { useEffectOnce } from "react-use";
 import { useState } from "react";
-import { alertError, alertSuccess } from "../../lib/alert";
+import useFetchContact from "../../hooks/fetch/useFetchContact";
+import useEdit from "../../hooks/crud/useEdit";
 
 export default function ContactEdit() {
-  const [token, _] = useLocalStorage("token", "");
   const { id } = useParams();
-  const [first_name, setFirstName] = useState("");
-  const [last_name, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const navigate = useNavigate();
 
-  async function fetchContact() {
-    const response = await contactDetail(token, id);
-
-    const responseBody = await response.json();
-
-    if (response.status === 200) {
-      setFirstName(responseBody.data.first_name);
-      setLastName(responseBody.data.last_name);
-      setEmail(responseBody.data.email);
-      setPhone(responseBody.data.phone);
-    } else if (response.status === 500) {
-      console.log("Internal server error");
-    } else {
-      console.log(responseBody.errors);
-    }
-  }
-
-  useEffectOnce(() => {
-    fetchContact().then(() => console.log("success"));
+  const [contact, setContact] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
   });
 
+  const { fetchContact } = useFetchContact(id, setContact);
+
+  useEffectOnce(() => {
+    fetchContact();
+  });
+
+  const { handleEdit } = useEdit(contactEdit, "/dashboard/contacts");
+
   async function handleSubmit(e) {
-    e.preventDefault();
-
-    const response = await contactEdit(token, {
-      id,
-      first_name,
-      last_name,
-      email,
-      phone,
-    });
-
-    const responseBody = await response.json();
-    console.log(responseBody);
-
-    if (response.status === 200) {
-      await alertSuccess("Contact updated successfully");
-      await navigate("/dashboard/contacts");
-    } else if (response.status === 500) {
-      await alertError("Internal server error");
-    } else {
-      await alertError(responseBody.errors);
-    }
+    await handleEdit(
+      e,
+      {
+        ...contact,
+      },
+      id
+    );
   }
 
   return (
@@ -94,8 +69,13 @@ export default function ContactEdit() {
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter first name"
                       required
-                      value={first_name}
-                      onChange={(e) => setFirstName(e.target.value)}
+                      value={contact["first_name"]}
+                      onChange={(e) =>
+                        setContact((prev) => ({
+                          ...prev,
+                          first_name: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                 </div>
@@ -117,8 +97,13 @@ export default function ContactEdit() {
                       className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       placeholder="Enter last name"
                       required
-                      value={last_name}
-                      onChange={(e) => setLastName(e.target.value)}
+                      value={contact["last_name"]}
+                      onChange={(e) =>
+                        setContact((prev) => ({
+                          ...prev,
+                          last_name: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                 </div>
@@ -141,8 +126,13 @@ export default function ContactEdit() {
                     className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                     placeholder="Enter email address"
                     required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={contact["email"]}
+                    onChange={(e) =>
+                      setContact((prev) => ({
+                        ...prev,
+                        email: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </div>
@@ -164,8 +154,13 @@ export default function ContactEdit() {
                     className="w-full pl-10 pr-3 py-3 bg-gray-700 bg-opacity-50 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                     placeholder="Enter phone number"
                     required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    value={contact["phone"]}
+                    onChange={(e) =>
+                      setContact((prev) => ({
+                        ...prev,
+                        phone: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </div>

@@ -53,7 +53,9 @@ export const addressDetail = async (token, { contactId, addressId }) => {
 
 export const addressEdit = async (
   token,
-  { contactId, addressId, street, city, province, country, postal_code }
+  contactId,
+  addressId,
+  { street, city, province, country, postal_code }
 ) => {
   return await fetch(
     `${

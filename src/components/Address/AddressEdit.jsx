@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
-import { useEffectOnce, useLocalStorage } from "react-use";
+import { Link, useParams } from "react-router";
+import { useEffectOnce } from "react-use";
 import { addressEdit } from "../../lib/api/AddressApi";
-import { alertError, alertSuccess } from "../../lib/alert";
 import Loader from "../Common/Loader";
 import useFetchContact from "../../hooks/fetch/useFetchContact";
 import useFetchAddress from "../../hooks/fetch/useFetchAddress";
+import useEdit from "../../hooks/crud/useEdit";
 
 export default function AddressEdit() {
   const { id, addressId } = useParams();
-  const [token] = useLocalStorage("token", "");
   const [loading, setLoading] = useState(true);
   const [contacts, setContacts] = useState([]);
   const [addresses, setAddresses] = useState({
@@ -19,7 +18,6 @@ export default function AddressEdit() {
     country: "",
     postal_code: "",
   });
-  const navigate = useNavigate();
 
   const { fetchContact } = useFetchContact(id, setContacts);
   const { fetchAddress } = useFetchAddress(id, addressId, setAddresses);
@@ -38,26 +36,17 @@ export default function AddressEdit() {
     init();
   });
 
+  const { handleEdit } = useEdit(addressEdit, `/dashboard/contacts/${id}`);
+
   async function handleSubmit(e) {
-    e.preventDefault();
-
-    const response = await addressEdit(token, {
-      contactId: id,
-      addressId,
-      ...addresses,
-    });
-
-    const responseBody = await response.json();
-    console.log(responseBody);
-
-    if (response.status === 200) {
-      await alertSuccess("Address updated successfully");
-      await navigate(`/dashboard/contacts/${id}`);
-    } else if (response.status === 500) {
-      await alertError("Internal server error");
-    } else {
-      await alertError(responseBody.errors);
-    }
+    await handleEdit(
+      e,
+      {
+        ...addresses,
+      },
+      id,
+      addressId
+    );
   }
 
   if (loading) {
