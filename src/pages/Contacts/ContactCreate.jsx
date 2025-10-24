@@ -24,6 +24,7 @@ export default function ContactCreate() {
       formData={formData}
       setFormData={setFormData}
       onSubmit={handleSubmit}
+      pathBack="/dashboard/contacts"
     />
   );
 }

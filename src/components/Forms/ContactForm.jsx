@@ -6,6 +6,7 @@ export default function ContactForm({
   formData,
   setFormData,
   onSubmit,
+  pathBack,
 }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,7 +17,7 @@ export default function ContactForm({
       <div>
         <div className="flex items-center mb-6">
           <Link
-            to="/dashboard/contacts"
+            to={pathBack}
             className="text-blue-400 hover:text-blue-300 mr-4 flex items-center transition-colors duration-200"
           >
             <i className="fas fa-arrow-left mr-2" /> Back to Contacts
@@ -134,7 +135,7 @@ export default function ContactForm({
               {/* Actions */}
               <div className="flex justify-end space-x-4">
                 <Link
-                  to="/dashboard/contacts"
+                  to={pathBack}
                   className="px-5 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 flex items-center shadow-md"
                 >
                   <i className="fas fa-times mr-2" /> Cancel
