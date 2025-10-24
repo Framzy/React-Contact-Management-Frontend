@@ -17,7 +17,7 @@ export default function useUserLogout() {
       return; // batal logout
     } else {
       try {
-        const response = await userLogout({ token });
+        const response = await userLogout(token);
         const responseBody = await response.json();
 
         if (response.status === 200) {

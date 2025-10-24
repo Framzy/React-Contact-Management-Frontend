@@ -5,6 +5,7 @@ import useGetPages from "../../hooks/useGetPages";
 import useDelete from "../../hooks/crud/useDelete";
 import useToggleAnimation from "../../hooks/useToggleAnimation";
 import useFetchContactList from "../../hooks/fetch/useFetchContactList";
+import Loader from "../Commons/Loader";
 
 export default function ContactList() {
   const [name, setName] = useState("");
@@ -14,6 +15,8 @@ export default function ContactList() {
   const [totalPage, setTotalPage] = useState(1);
   const [contacts, setContacts] = useState([]);
   const [reload, setReload] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   const { toggle, contentRef, iconRef } = useToggleAnimation(300);
   const { getPages } = useGetPages();
@@ -26,19 +29,25 @@ export default function ContactList() {
   });
 
   async function handleDelete(id) {
+    setLoading(true);
     await handleContactDelete(id);
     setReload(!reload);
+    setLoading(false);
   }
 
   async function handleSearchContact(e) {
     e.preventDefault();
+    setLoading(true);
     setPage(1);
     setReload(!reload);
+    setLoading(false);
   }
 
   async function handlePageChange(page) {
+    setLoading(true);
     setPage(page);
     setReload(!reload);
+    setLoading(false);
   }
 
   const { fetchContacts } = useFetchContactList(
@@ -55,6 +64,14 @@ export default function ContactList() {
   useEffect(() => {
     fetchContacts();
   }, [page, name, email, phone, reload]); // eslint-disable-line
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader size={60} color="#16b6ff" />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -153,7 +170,7 @@ export default function ContactList() {
               <div className="mt-5 text-right">
                 <button
                   type="submit"
-                  className="px-5 py-3 bg-gradient text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-lg transform hover:-translate-y-0.5"
+                  className="px-5 py-3 bg-gradient text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-lg transform hover:-translate-y-0.5 hover:cursor-pointer"
                 >
                   <i className="fas fa-search mr-2" /> Search
                 </button>
@@ -228,7 +245,7 @@ export default function ContactList() {
                   </Link>
                   <button
                     onClick={() => handleDelete(contact.id)}
-                    className="px-4 py-2 bg-linear-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center"
+                    className="px-4 py-2 bg-linear-to-r from-red-600 to-red-500 text-white rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-all duration-200 font-medium shadow-md flex items-center hover:cursor-pointer"
                   >
                     <i className="fas fa-trash-alt mr-2" /> Delete
                   </button>

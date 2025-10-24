@@ -45,42 +45,42 @@ createRoot(document.getElementById("root")).render(
               </Route>
             </Route>
           </Route>
-
-          {/* error pages */}
-          <Route
-            path="/unauthorized"
-            element={
-              <ErrorPage
-                code="401"
-                title="Unauthorized"
-                message="You don't have permission to access this page."
-                buttonText="Login"
-                buttonLink="/login"
-              />
-            }
-          />
-          <Route
-            path="/server-error"
-            element={
-              <ErrorPage
-                code="500"
-                title="Internal Server Error"
-                message="Something went wrong on our end. Please try again later."
-              />
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <ErrorPage
-                code="404"
-                title="Page Not Found"
-                message="Sorry, we couldn't find that page."
-                buttonText="Exist Page"
-              />
-            }
-          />
         </Route>
+
+        {/* Error pages (di luar UserCheck agar universal) */}
+        <Route
+          path="/unauthorized"
+          element={
+            <ErrorPage
+              code="401"
+              title="Unauthorized"
+              message="You don't have permission to access this page."
+              buttonText="Login"
+              buttonLink="/login"
+            />
+          }
+        />
+        <Route
+          path="/server-error"
+          element={
+            <ErrorPage
+              code="500"
+              title="Internal Server Error"
+              message="Something went wrong on our end. Please try again later."
+            />
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <ErrorPage
+              code="404"
+              title="Page Not Found"
+              message="Sorry, we couldn't find that page."
+              buttonText="Exist Page"
+            />
+          }
+        />
       </Routes>
     </BrowserRouter>
   </StrictMode>

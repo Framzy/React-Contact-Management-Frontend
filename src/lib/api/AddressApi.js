@@ -23,7 +23,7 @@ export const addressCreate = async (
   );
 };
 
-export const addressList = async (token, { contactId }) => {
+export const addressList = async (token, contactId) => {
   return await fetch(
     `${import.meta.env.VITE_API_PATH}/contacts/${contactId}/addresses`,
     {
@@ -36,7 +36,7 @@ export const addressList = async (token, { contactId }) => {
   );
 };
 
-export const addressDetail = async (token, { contactId, addressId }) => {
+export const addressDetail = async (token, contactId, addressId) => {
   return await fetch(
     `${
       import.meta.env.VITE_API_PATH
@@ -79,7 +79,7 @@ export const addressEdit = async (
   );
 };
 
-export const addressDelete = async (token, { contactId, addressId }) => {
+export const addressDelete = async (token, contactId, addressId) => {
   return await fetch(
     `${
       import.meta.env.VITE_API_PATH

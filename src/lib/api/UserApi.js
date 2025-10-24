@@ -55,7 +55,7 @@ export const userUpdatePassword = async (token, { password }) => {
   });
 };
 
-export const userDetail = async ({ token }) => {
+export const userDetail = async (token) => {
   return await fetch(`${import.meta.env.VITE_API_PATH}/users/current`, {
     method: "GET",
     headers: {
@@ -66,7 +66,7 @@ export const userDetail = async ({ token }) => {
   });
 };
 
-export const userLogout = async ({ token }) => {
+export const userLogout = async (token) => {
   return await fetch(`${import.meta.env.VITE_API_PATH}/users/logout`, {
     method: "DELETE",
     headers: {

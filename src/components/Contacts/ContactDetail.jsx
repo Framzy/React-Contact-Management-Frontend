@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router";
-import { useEffectOnce, useLocalStorage } from "react-use";
-import { addressDelete, addressList } from "../../lib/api/AddressApi";
+import { useEffectOnce } from "react-use";
+import { addressDelete } from "../../lib/api/AddressApi";
 import useDelete from "../../hooks/crud/useDelete";
 import Loader from "../Commons/Loader";
 import useShortText from "../../hooks/useShortText";
 import useFetchContact from "../../hooks/fetch/useFetchContact";
+import useFetchAddressList from "../../hooks/fetch/useFetchAddressList";
 
 export default function ContactDetail() {
-  const [token, _] = useLocalStorage("token", "");
   const { id } = useParams();
   const [addresses, setAddresses] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -24,30 +24,17 @@ export default function ContactDetail() {
   async function handleDelete(addressId) {
     setLoading(true);
     await handleAddressDelete({ contactId: id, addressId });
-    fetchAddresses();
+    fetchAddressList();
     setLoading(false);
   }
 
   const { fetchContact } = useFetchContact(id, setContacts);
+  const { fetchAddressList } = useFetchAddressList(id, setAddresses);
 
   useEffectOnce(() => {
     fetchContact().finally(() => setLoading(false));
-    fetchAddresses().finally(() => setLoading(false));
+    fetchAddressList().finally(() => setLoading(false));
   });
-
-  async function fetchAddresses() {
-    const response = await addressList(token, { contactId: id });
-
-    const responseBody = await response.json();
-
-    if (response.status === 200) {
-      setAddresses(responseBody.data);
-    } else if (response.status === 500) {
-      console.log("Internal server error");
-    } else {
-      console.log(responseBody.errors);
-    }
-  }
 
   if (loading) {
     return (
