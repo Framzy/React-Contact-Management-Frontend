@@ -79,7 +79,7 @@ export const addressEdit = async (
   );
 };
 
-export const addressDelete = async (token, contactId, addressId) => {
+export const addressDelete = async (token, { contactId, addressId }) => {
   return await fetch(
     `${
       import.meta.env.VITE_API_PATH
