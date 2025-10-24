@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router";
 import { useEffectOnce, useLocalStorage } from "react-use";
 import { addressDelete, addressList } from "../../lib/api/AddressApi";
 import useDelete from "../../hooks/crud/useDelete";
-import Loader from "../Common/Loader";
+import Loader from "../Commons/Loader";
 import shortText from "../../utils/shortText";
 import useFetchContact from "../../hooks/fetch/useFetchContact";
 

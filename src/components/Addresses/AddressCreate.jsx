@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useParams } from "react-router";
 import { useEffectOnce } from "react-use";
 import { addressCreate } from "../../lib/api/AddressApi";
-import Loader from "../Common/Loader";
+import Loader from "../Commons/Loader";
 import useFetchContact from "../../hooks/fetch/useFetchContact";
 import useAdd from "../../hooks/crud/useAdd";
 
