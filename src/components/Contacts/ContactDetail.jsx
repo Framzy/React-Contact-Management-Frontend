@@ -4,16 +4,16 @@ import { useEffectOnce, useLocalStorage } from "react-use";
 import { addressDelete, addressList } from "../../lib/api/AddressApi";
 import useDelete from "../../hooks/crud/useDelete";
 import Loader from "../Commons/Loader";
-import shortText from "../../utils/shortText";
+import useShortText from "../../hooks/useShortText";
 import useFetchContact from "../../hooks/fetch/useFetchContact";
 
 export default function ContactDetail() {
   const [token, _] = useLocalStorage("token", "");
   const { id } = useParams();
-
   const [addresses, setAddresses] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { shortText } = useShortText();
 
   const { handleDelete: handleAddressDelete } = useDelete(addressDelete, {
     confirmMessage: "Are you sure you want to delete this address?",
@@ -160,7 +160,7 @@ export default function ContactDetail() {
                       </h4>
                     </div>
                     <div className="space-y-3 text-gray-300 ml-2 mb-4">
-                      <p className="flex items-center ">
+                      <p className="flex items-center">
                         <i className="fas fa-road text-gray-500 w-6" />
                         <span className="font-medium w-24">Street:</span>
                         <span> {shortText(address.street)}</span>
