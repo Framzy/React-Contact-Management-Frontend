@@ -12,11 +12,10 @@ We only need to use React and React Router for the project.
 
 ## Token Management
 
-Pada aplikasi Backend Project, session user direpresentasikan dalam Token
+In backend project app, session user is represented by token and that token need to send in every http request.
 
-Dan Token tersebut perlu dikirim di tiap http request
+So, in Frontend project, we will keep token data in browser local storage, so we able to use in next http request. 
 
-Oleh karena itu, di Frontend Project, kita akan menyimpan data token tersebut di Browser Local Storage, agar bisa digunakan di http request selanjutnya
 
 [https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
 
@@ -61,9 +60,12 @@ npm install react-router
 - ### components
 
   - ### Layout
+      
+      Layout.jsx
+      Dashboard.jsx
+  
+    - #### Commons
 
-    Layout.jsx
-    Dashboard.jsx
 
   - ### User
 
