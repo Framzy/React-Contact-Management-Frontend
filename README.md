@@ -60,11 +60,18 @@ npm install react-router
 - ### components
 
   - ### Layout
-      
-      Layout.jsx
-      Dashboard.jsx
+
+    Layout.jsx
+    Dashboard.jsx
   
-    - #### Commons
+  - ### Commons
+
+  - ### Contacts
+
+  - ### Forms
+
+  - ### Users
+
 
 
   - ### User
@@ -83,3 +90,15 @@ npm install react-router
   - ### alert
 
     alert.js
+
+- ### Pages
+
+  - ### addresses
+
+  - ### Contacts
+
+  - ### Errors
+
+- ### Styles
+
+
