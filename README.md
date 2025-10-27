@@ -2,13 +2,9 @@
 
 ## Frontend Project
 
-In this class, we will practice building the Frontend Project using React.
+In this class, we will practice building the Frontend Project using React. We will focus on creating the Frontend Project application in the form of a SPA (Single Page Application).
 
-We will focus on creating the Frontend Project application in the form of a SPA (Single Page Application).
-
-And because the data is handled by the Backend, we don't need to use a Global State Management system like Redux.
-
-We only need to use React and React Router for the project.
+And because the data is handled by the Backend, we don't need to use a Global State Management system like Redux. We only need to use React and React Router for the project.
 
 ## Token Management
 
@@ -73,13 +69,13 @@ npm install react-router
   - ### Users
 
 
+- ### Hooks
 
-  - ### User
+  - ### Crud
 
-    UserRegister.jsx
-    UserLogin.jsx
+  - ### Fetch
 
-  - ### Contact
+
 
 - ### lib
 
