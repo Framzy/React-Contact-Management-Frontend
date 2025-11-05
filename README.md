@@ -97,4 +97,8 @@ npm install react-router
 
 - ### Styles
 
-
+## Term to Deploy
+### Connect with backend and database
+- Change Database url, in this condition we use supabase as database server and connect to render as backend server.
+- Change Vite Api Path, in this condition we use render as backend server.
+  
